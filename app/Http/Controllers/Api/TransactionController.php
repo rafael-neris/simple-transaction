@@ -24,6 +24,7 @@ class TransactionController extends Controller
     }
 
     /**
+     * store
      * Salva transações entre usuários
      *
      * @param  \App\Http\Requests\Transaction\StoreRequest  $request

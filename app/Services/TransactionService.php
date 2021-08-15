@@ -28,6 +28,7 @@ class TransactionService
     }
 
     /**
+     * create
      * Realiza a criação de uma transação
      *
      * @param  Wallet $wallet
@@ -47,6 +48,7 @@ class TransactionService
     }
 
     /**
+     * createUsersTransactions
      * Realiza a criação das transações entre usuários
      *
      * @param  array $data
@@ -65,6 +67,7 @@ class TransactionService
     }
 
     /**
+     * validateTransaction
      * Valida a criação da transação
      *
      * @param  Wallet $wallet

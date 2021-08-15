@@ -8,13 +8,18 @@ abstract class BaseRepository
 {
     protected $modelClass;
 
+    public function getById(int $id)
+    {
+        return app($this->modelClass)->find($id);
+    }
+
     public function create(array $data)
     {
         return app($this->modelClass)->fill($data)->save();
     }
 
-    public function getById(int $id)
+    public function update($model, array $data)
     {
-        return app($this->modelClass)->find($id);
+        return $model->fill($data)->update();
     }
 }

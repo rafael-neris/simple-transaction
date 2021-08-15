@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Exception;
+use App\Exceptions\External\NotifyException;
 
 class NotifyService extends HttpClientService
 {
@@ -15,7 +15,7 @@ class NotifyService extends HttpClientService
         $response = $this->request('GET', 'notify');
 
         if ($response->message !== 'Success') {
-            throw new Exception('erro ao enviar notificação');
+            throw new NotifyException();
         }
     }
 }

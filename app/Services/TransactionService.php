@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\TransactionTypesEnum;
+use App\Exceptions\Transaction\UserCantDoTransactionException;
+use App\Exceptions\Transaction\UserHasNoBalanceException;
 use App\Models\Wallet;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
-use Exception;
 
 class TransactionService
 {
@@ -81,11 +82,11 @@ class TransactionService
     {
         if ($type === TransactionTypesEnum::OUT) {
             if (!$this->walletService->hasBalance($wallet, $value)) {
-                throw new Exception('usuário sem saldo');
+                throw new UserHasNoBalanceException();
             }
 
             if (!$this->userService->canDoTransaction($wallet->user)) {
-                throw new Exception("tipo de usuario sem permissão para efetuar transação");
+                throw new UserCantDoTransactionException();
             }
         }
     }

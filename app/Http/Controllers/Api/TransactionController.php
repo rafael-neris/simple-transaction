@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\External\ExternalException;
+use App\Exceptions\Transaction\TransactionException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\StoreRequest;
-use App\Http\Resources\TransactionResource;
-use App\Models\Transaction;
-use App\Repositories\TransactionRepository;
 use App\Services\TransactionService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -39,8 +38,12 @@ class TransactionController extends Controller
 
             DB::commit();
             return response()->json(['message' => 'success']);
+        } catch (TransactionException $exception) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+        } catch (ExternalException $exception) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
         } catch (Exception $exception) {
-            //
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
         }
     }
 }

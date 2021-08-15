@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\TransactionTypesEnum;
-use App\Enums\UserTypeEnum;
 use App\Models\Wallet;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
@@ -15,16 +14,19 @@ class TransactionService
 {
     private $transactionRepository;
     private $userRepository;
+    private $userService;
     private $walletService;
 
     public function __construct(
         TransactionRepository $transactionRepository,
         UserRepository $userRepository,
+        UserService $userService,
         WalletService $walletService
     ) {
         $this->transactionRepository = $transactionRepository;
-        $this->walletService = $walletService;
         $this->userRepository = $userRepository;
+        $this->userService = $userService;
+        $this->walletService = $walletService;
     }
 
     /**
@@ -82,7 +84,7 @@ class TransactionService
                 throw new Exception('usuário sem saldo');
             }
 
-            if ($wallet->user->user_type_id !== UserTypeEnum::INDIVIDUAL) {
+            if (!$this->userService->canDoTransaction($wallet->user)) {
                 throw new Exception("tipo de usuario sem permissão para efetuar transação");
             }
         }

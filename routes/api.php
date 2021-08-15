@@ -18,4 +18,3 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/transaction', 'Api\TransactionController@store');
-Route::get('/transaction/{transaction}', 'Api\TransactionController@show');

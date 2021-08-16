@@ -39,11 +39,17 @@ class TransactionController extends Controller
             DB::commit();
             return response()->json(['message' => 'success']);
         } catch (TransactionException $exception) {
-            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+            $exceptionMessage = $exception->getMessage();
+            $exceptionCode = $exception->getCode();
         } catch (ExternalException $exception) {
-            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+            $exceptionMessage = $exception->getMessage();
+            $exceptionCode = $exception->getCode();
         } catch (Exception $exception) {
-            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+            $exceptionMessage = $exception->getMessage();
+            $exceptionCode = $exception->getCode();
         }
+
+        DB::rollBack();
+        return response()->json(['message' => $exceptionMessage], $exceptionCode);
     }
 }

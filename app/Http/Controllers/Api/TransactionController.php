@@ -12,6 +12,7 @@ use App\Services\TransactionService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -37,19 +38,32 @@ class TransactionController extends Controller
             $this->transactionService->createUsersTransactions($request->all());
 
             DB::commit();
+
+            Log::info('Transação efetuada com sucesso', $request->all());
+
             return response()->json(['message' => 'success']);
         } catch (TransactionException $exception) {
-            $exceptionMessage = $exception->getMessage();
-            $exceptionCode = $exception->getCode();
+            return $this->returnException($exception);
         } catch (ExternalException $exception) {
-            $exceptionMessage = $exception->getMessage();
-            $exceptionCode = $exception->getCode();
+            return $this->returnException($exception);
         } catch (Exception $exception) {
-            $exceptionMessage = $exception->getMessage();
-            $exceptionCode = $exception->getCode();
+            return $this->returnException($exception);
         }
+    }
 
+    private function returnException(Exception $exception, $customMessage = null): JsonResponse
+    {
         DB::rollBack();
-        return response()->json(['message' => $exceptionMessage], $exceptionCode);
+
+        $exceptionMessage = $exception->getMessage();
+        $exceptionCode = $exception->getCode();
+
+        Log::error($exceptionMessage, [
+            'code' => $exceptionCode,
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+        ]);
+
+        return response()->json(['message' => $customMessage ?? $exceptionMessage], $exceptionCode);
     }
 }

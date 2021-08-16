@@ -31,4 +31,16 @@ class TransactionTest extends TestCase
 
         $this->assertInstanceOf(Wallet::class, $transaction->wallet);
     }
+
+    public function testScopeIn()
+    {
+        $inTransactions = Transaction::in()->pluck('type')->toArray();
+        $this->assertFalse(in_array(TransactionTypesEnum::OUT, $inTransactions)); 
+    }
+
+    public function testScopeOut()
+    {
+        $outTransactions = Transaction::out()->pluck('type')->toArray();
+        $this->assertFalse(in_array(TransactionTypesEnum::IN, $outTransactions)); 
+    }
 }

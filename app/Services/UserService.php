@@ -13,6 +13,13 @@ class UserService
         UserTypeEnum::INDIVIDUAL,
     ];
 
+    /**
+     * canDoTransaction
+     * Valida se usuário tem permissão para realizar transação
+     *
+     * @param  mixed $user
+     * @return bool
+     */
     public function canDoTransaction(User $user): bool
     {
         return in_array($user->user_type_id, $this->userTypesDoTransaction);

@@ -13,6 +13,8 @@ class TransactionSeeder extends Seeder
      */
     public function run()
     {
+        Transaction::unsetEventDispatcher();
+
         factory(Transaction::class)->create([
             'value' => 100000,
             'type' => TransactionTypesEnum::IN,

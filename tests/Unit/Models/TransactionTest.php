@@ -35,12 +35,12 @@ class TransactionTest extends TestCase
     public function testScopeIn()
     {
         $inTransactions = Transaction::in()->pluck('type')->toArray();
-        $this->assertFalse(in_array(TransactionTypesEnum::OUT, $inTransactions)); 
+        $this->assertFalse(in_array(TransactionTypesEnum::OUT, $inTransactions));
     }
 
     public function testScopeOut()
     {
         $outTransactions = Transaction::out()->pluck('type')->toArray();
-        $this->assertFalse(in_array(TransactionTypesEnum::IN, $outTransactions)); 
+        $this->assertFalse(in_array(TransactionTypesEnum::IN, $outTransactions));
     }
 }

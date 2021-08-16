@@ -13,19 +13,19 @@ use App\Repositories\UserRepository;
 
 class TransactionService
 {
-    private $transactionRepository;
-    private $userRepository;
+    private $transactionRepo;
+    private $userRepo;
     private $userService;
     private $walletService;
 
     public function __construct(
-        TransactionRepository $transactionRepository,
-        UserRepository $userRepository,
+        TransactionRepository $transactionRepo,
+        UserRepository $userRepo,
         UserService $userService,
         WalletService $walletService
     ) {
-        $this->transactionRepository = $transactionRepository;
-        $this->userRepository = $userRepository;
+        $this->transactionRepo = $transactionRepo;
+        $this->userRepo = $userRepo;
         $this->userService = $userService;
         $this->walletService = $walletService;
     }
@@ -43,7 +43,7 @@ class TransactionService
     {
         $this->validateTransaction($wallet, $value, $type);
 
-        return $this->transactionRepository->create([
+        return $this->transactionRepo->create([
             'wallet_id' => $wallet->id,
             'value' => $value,
             'type' => $type,
@@ -59,8 +59,8 @@ class TransactionService
      */
     public function createUsersTransactions(array $data): bool
     {
-        $payer = $this->userRepository->getById((int) $data['payer']);
-        $payee = $this->userRepository->getById((int) $data['payee']);
+        $payer = $this->userRepo->getById((int) $data['payer']);
+        $payee = $this->userRepo->getById((int) $data['payee']);
         $transactionValue = (int) $data['value'];
 
         $payerTransaction = $this->create($payer->wallet, $transactionValue, TransactionTypesEnum::OUT);

@@ -16,7 +16,7 @@ class TransactionObserver
      * @param  \App\Models\Transaction  $transaction
      * @return void
      */
-    public function creating(Transaction $transaction)
+    public function creating()
     {
         $authorizationService = resolve(AuthorizationService::class);
         $authorizationService->send();

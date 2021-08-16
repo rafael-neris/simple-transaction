@@ -8,9 +8,9 @@ abstract class BaseRepository
 {
     protected $modelClass;
 
-    public function getById(int $id)
+    public function getById(int $modelId)
     {
-        return app($this->modelClass)->find($id);
+        return app($this->modelClass)->find($modelId);
     }
 
     public function create(array $data)

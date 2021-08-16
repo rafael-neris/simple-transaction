@@ -9,7 +9,7 @@ use App\Models\User;
 
 class UserService
 {
-    private $userTypesDoTransaction = [
+    private $typesDoTransaction = [
         UserTypeEnum::INDIVIDUAL,
     ];
 
@@ -22,6 +22,6 @@ class UserService
      */
     public function canDoTransaction(User $user): bool
     {
-        return in_array($user->user_type_id, $this->userTypesDoTransaction);
+        return in_array($user->user_type_id, $this->typesDoTransaction);
     }
 }

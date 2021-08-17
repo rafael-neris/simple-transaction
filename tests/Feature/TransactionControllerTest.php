@@ -16,6 +16,12 @@ class TransactionControllerTest extends TestCase
 {
     public function testUsersTransactionSuccess()
     {
+        $this->partialMock(AuthorizationService::class, function ($mock) {
+            $mock->shouldReceive('request')->andReturn(
+                (object) ['message' => 'Autorizado']
+            );
+        });
+
         $transactionValue = 1000;
 
         $payer = User::find(1);

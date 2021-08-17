@@ -9,6 +9,7 @@ use App\Exceptions\Transaction\TransactionException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Notifications\TransactionReceivedNotification;
+use App\Services\AuthorizationService;
 use App\Services\TransactionService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -18,9 +19,13 @@ use Illuminate\Support\Facades\Log;
 class TransactionController extends Controller
 {
     private $transactionService;
+    private $authorizationService;
 
-    public function __construct(TransactionService $transactionService)
-    {
+    public function __construct(
+        AuthorizationService $authorizationService,
+        TransactionService $transactionService
+    ) {
+        $this->authorizationService = $authorizationService;
         $this->transactionService = $transactionService;
     }
 
@@ -37,9 +42,9 @@ class TransactionController extends Controller
             DB::beginTransaction();
 
             $transactions = $this->transactionService->createUsersTransactions($request->all());
+            $this->authorizationService->send();
 
             DB::commit();
-
             Log::info('Transação efetuada com sucesso', $request->all());
 
             $transactions['payeeTransaction']->notify(new TransactionReceivedNotification());

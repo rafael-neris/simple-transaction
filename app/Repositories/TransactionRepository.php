@@ -9,4 +9,5 @@ use App\Models\Transaction;
 class TransactionRepository extends BaseRepository
 {
     protected $modelClass = Transaction::class;
+    protected $cacheKey = 'transactions';
 }

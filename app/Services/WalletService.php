@@ -17,7 +17,7 @@ class WalletService
         $this->walletRepository = $walletRepository;
     }
 
-    public function update(Wallet $wallet, array $data): ?bool
+    public function update(Wallet $wallet, array $data): ?Wallet
     {
         return $this->walletRepository->update($wallet, $data);
     }
@@ -29,9 +29,9 @@ class WalletService
      * @param  mixed $wallet
      * @param  mixed $value
      * @param  mixed $transactionType
-     * @return bool
+     * @return Wallet
      */
-    public function updateBalance(Wallet $wallet, int $value, string $transactionType): ?bool
+    public function updateBalance(Wallet $wallet, int $value, string $transactionType): ?Wallet
     {
         $oldValue = (int) $wallet->balance;
         $newValue = $oldValue;

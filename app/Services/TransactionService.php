@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\TransactionTypesEnum;
 use App\Exceptions\Transaction\UserCantDoTransactionException;
 use App\Exceptions\Transaction\UserHasNoBalanceException;
+use App\Models\Transaction;
 use App\Models\Wallet;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
@@ -39,7 +40,7 @@ class TransactionService
      * @param  string $type
      * @return bool
      */
-    public function create(Wallet $wallet, int $value, string $type = TransactionTypesEnum::IN): bool
+    public function create(Wallet $wallet, int $value, string $type = TransactionTypesEnum::IN): Transaction
     {
         $this->validateTransaction($wallet, $value, $type);
 
@@ -57,7 +58,7 @@ class TransactionService
      * @param  array $data
      * @return bool
      */
-    public function createUsersTransactions(array $data): bool
+    public function createUsersTransactions(array $data): array
     {
         $payer = $this->userRepo->getById((int) $data['payer']);
         $payee = $this->userRepo->getById((int) $data['payee']);
@@ -66,7 +67,10 @@ class TransactionService
         $payerTransaction = $this->create($payer->wallet, $transactionValue, TransactionTypesEnum::OUT);
         $payeeTransaction = $this->create($payee->wallet, $transactionValue, TransactionTypesEnum::IN);
 
-        return $payerTransaction && $payeeTransaction;
+        return [
+            'payerTransaction' => $payerTransaction,
+            'payeeTransaction' => $payeeTransaction
+        ];
     }
 
     /**

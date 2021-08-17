@@ -9,4 +9,5 @@ use App\Models\Wallet;
 class WalletRepository extends BaseRepository
 {
     protected $modelClass = Wallet::class;
+    protected $cacheKey = 'wallets';
 }

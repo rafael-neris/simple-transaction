@@ -154,34 +154,6 @@ class TransactionControllerTest extends TestCase
         ]);
     }
 
-    public function testUsersTransactionCreatedEventNotifyException()
-    {
-        $this->partialMock(NotifyService::class, function ($mock) {
-            $mock->shouldReceive('request')->once()->andReturn(
-                (object) ['message' => 'Error']
-            );
-        });
-
-        Event::fake([TransactionObserver::class]);
-
-        $transactionValue = 100;
-
-        $payer = User::find(1);
-        $payee = User::find(2);
-
-        $transactionData = [
-            'payer' => $payer->id,
-            'payee' => $payee->id,
-            'value' => $transactionValue,
-        ];
-
-        $response = $this->postJson('/api/transaction', $transactionData);
-        $response->assertStatus(500);
-        $response->assertJson([
-            'message' => 'Ocorreu um erro ao tentar enviar notificação',
-        ]);
-    }
-
     public function testUsersTransactionException()
     {
         $this->partialMock(TransactionService::class, function ($mock) {

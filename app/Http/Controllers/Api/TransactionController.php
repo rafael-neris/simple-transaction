@@ -8,6 +8,7 @@ use App\Exceptions\External\ExternalException;
 use App\Exceptions\Transaction\TransactionException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\StoreRequest;
+use App\Notifications\TransactionReceivedNotification;
 use App\Services\TransactionService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -35,11 +36,22 @@ class TransactionController extends Controller
         try {
             DB::beginTransaction();
 
-            $this->transactionService->createUsersTransactions($request->all());
+            $transactions = $this->transactionService->createUsersTransactions($request->all());
 
             DB::commit();
 
             Log::info('Transação efetuada com sucesso', $request->all());
+
+            $transactions['payeeTransaction']->notify(new TransactionReceivedNotification());
+
+            Log::info('Notificação adicionada a fila de envio', [
+                'transaction' => [
+                    'id' => $transactions['payeeTransaction']->id,
+                    'wallet_id' => $transactions['payeeTransaction']->wallet_id,
+                    'type' => $transactions['payeeTransaction']->type,
+                    'value' => $transactions['payeeTransaction']->value
+                ]
+            ]);
 
             return response()->json(['message' => 'success']);
         } catch (TransactionException $exception) {

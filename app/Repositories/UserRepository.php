@@ -9,4 +9,5 @@ use App\Models\User;
 class UserRepository extends BaseRepository
 {
     protected $modelClass = User::class;
+    protected $cacheKey = 'users';
 }

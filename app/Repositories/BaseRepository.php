@@ -4,22 +4,31 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use Illuminate\Support\Facades\Cache;
+
 abstract class BaseRepository
 {
     protected $modelClass;
+    protected $cacheKey;
 
     public function getById(int $modelId)
     {
-        return app($this->modelClass)->find($modelId);
+        return Cache::remember($this->cacheKey . $modelId, 180, function () use ($modelId) {
+            return app($this->modelClass)->find($modelId);
+        });
     }
 
     public function create(array $data)
     {
-        return app($this->modelClass)->fill($data)->save();
+        $model = app($this->modelClass)->fill($data);
+        $model->save();
+
+        return $model->refresh();
     }
 
     public function update($model, array $data)
     {
-        return $model->fill($data)->update();
+        $model->fill($data)->update();
+        return $model->refresh();
     }
 }

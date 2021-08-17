@@ -18,7 +18,7 @@ Projeto dedicado a demonstração de transação de valores entre usuários, sim
     - Caso o arquivo não tenha sido criado:
         - Crie um arquivo _.env_ na raiz do projeto com base no arquivo _.env.example_ e
         - Execute o comando `docker-compose exec app php artisan key:generate` para gerar key da aplicação.
-- Altere o arquivo _.env_ com as configurações de banco de dados:
+- Altere o arquivo _.env_ com as configurações:
 ```env
 ...
 
@@ -27,9 +27,12 @@ DB_DATABASE=simple-transaction
 DB_USERNAME=root
 DB_PASSWORD=secret
 
+REDIS_HOST=redis
+REDIS_PASSWORD=simple-transaction
 ...
 ```
 - Execute as migrations junto com os seeaders para iniciar o banco de dados `docker-compose exec app php artisan migrate --seed`;
+- A aplicação roda em `localhost:8000`
 
 ## Realizando uma transação (transferência entre usuários)
 
@@ -84,9 +87,12 @@ POST    `/api/transaction`
 
 _Atenção ao valor da transferência em centavos, sendo sempre um número inteiro._
 
+## Considerações
+
+- A notificação de recebimento de uma transferência é incluída em uma fila de envio. Para deixar processando seu envio utilize o comando `docker-compose exec app php artisan queue:work`;
+
 ## Melhorias
 
-- Tratar erro de envio de notificação para que, quando não for possível enviar, colocar em uma fila para nova tentativa. Envio de notificação não deveria ser impeditivo para finalizar transação;
-- Refinar tratamento de exceptions e implementar logs de erro. Trazer mensagens "amigáveis" ao usuário final e registrar erro com detalhes em log;
-- Implementar camada de cache;
-- Refatorar/repensar o uso do Observer.
+- Tratar notificações com falha e recolocar na fila de envio;
+- Refinar tratamento de exceptions;
+- Melhorar implementação de tests;

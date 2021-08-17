@@ -13,7 +13,8 @@ services:
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
-      - ./:/var/www
+      - ./:/var/www:cached
+      - ./data/logs/php:/var/log/php
     networks:
       - simple-transaction
 
@@ -28,6 +29,8 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
+    volumes:
+      - ./data/db:/var/lib/mysql
     networks:
       - simple-transaction
 
@@ -38,8 +41,20 @@ services:
     ports:
       - 8000:80
     volumes:
-      - ./:/var/www
+      - ./:/var/www:cached
       - ./docker/nginx:/etc/nginx/conf.d/
+      - ./data/logs/nginx:/var/log/nginx
+    networks:
+      - simple-transaction
+
+  redis:
+    image: redis:alpine
+    container_name: simple-transaction-redis
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    volumes:
+    - ./data/redis:/data
+    ports:
+      - "8002:6379"
     networks:
       - simple-transaction
 
